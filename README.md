@@ -19,7 +19,7 @@ Dependencies:
 
 ## reproducing GPT-2
 
-Prepare dataset:
+Prepare dataset (skip if download data from the link below):
 
 ```
 $ python data/openwebtext/prepare.py
