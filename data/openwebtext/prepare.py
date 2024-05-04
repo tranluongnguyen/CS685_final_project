@@ -20,9 +20,6 @@ enc = tiktoken.get_encoding("gpt2")
 
 if __name__ == '__main__':
     # takes 54GB in huggingface .cache dir, about 8M documents (8,013,769)
-    split = 'train'
-    filename = os.path.join(os.path.dirname(__file__), f'{split}.bin')
-    print(filename)
     dataset = load_dataset("openwebtext", num_proc=num_proc_load_dataset)
 
     # owt by default only contains the 'train' split, so create a test split
