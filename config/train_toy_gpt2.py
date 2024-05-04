@@ -19,7 +19,7 @@ gradient_accumulation_steps = 1
 
 n_layer = 6
 n_head = 6
-n_embd = 256
+n_embd = 384
 dropout = 0.2
 
 learning_rate = 1e-3 # with baby networks can afford to go a bit higher
