@@ -30,11 +30,11 @@ Train gpt-2 on sample dataset:
 $ python train.py config/train_toy_gpt2.py
 ```
 
-Train gpt-2 on full dataset: Copy train.bin, val.bin files to `data/openwebtext/`
+Train gpt-2 on full dataset: Copy train.bin, val.bin files to `data/openwebtext/` and run:
 ```
 $ python train.py config/train_gpt2.py
 ```
-
+or:
 ```
 $ torchrun --standalone --nproc_per_node=2 train.py config/train_gpt2.py
 ```
