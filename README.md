@@ -31,7 +31,7 @@ $ python train.py config/train_toy_gpt2.py
 ```
 
 Train gpt-2 on full dataset:
-Download dataset from [this] (https://drive.google.com/drive/folders/1flf2mpLE3onBh-avuXhRXNedZO7eHz4T?usp=sharing) and copy train.bin, val.bin files to `data/openwebtext/` and run:
+Download dataset from [this](https://drive.google.com/drive/folders/1flf2mpLE3onBh-avuXhRXNedZO7eHz4T?usp=sharing) and copy train.bin, val.bin files to `data/openwebtext/` and run:
 ```
 $ python train.py config/train_gpt2.py
 ```
