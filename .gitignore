@@ -10,3 +10,8 @@ __pycache__/
 input.txt
 env/
 venv/
+out/
+wandb/
+
+scripts/slurm_el.sh
+scripts/slurm_npl.sh

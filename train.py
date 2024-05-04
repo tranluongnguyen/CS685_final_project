@@ -22,6 +22,8 @@ import math
 import pickle
 from contextlib import nullcontext
 
+# import argparse
+
 import numpy as np
 import torch
 from torch.nn.parallel import DistributedDataParallel as DDP
@@ -29,16 +31,28 @@ from torch.distributed import init_process_group, destroy_process_group
 
 from model import GPTConfig, GPT
 
+# parser = argparse.ArgumentParser(description="ImageDream")
+# parser.add_argument("--resume_path", type=str, default=None)
+# # parser.add_argument("--prompt", type=str, default="")
+# args = parser.parse_args()
+
+
+os.environ['WANDB_DISABLED'] = 'true'
+# os.environ['CUDA_VISIBLE_DEVICES'] = '0,4'
+
 # -----------------------------------------------------------------------------
 # default config values designed to train a gpt2 (124M) on OpenWebText
 # I/O
 out_dir = 'out'
 eval_interval = 2000
+save_interval = 100
 log_interval = 1
 eval_iters = 200
 eval_only = False # if True, script exits right after the first eval
 always_save_checkpoint = True # if True, always save a checkpoint after each eval
 init_from = 'scratch' # 'scratch' or 'resume' or 'gpt2*'
+
+# resume_path = None
 # wandb logging
 wandb_log = False # disabled by default
 wandb_project = 'owt'
@@ -71,12 +85,14 @@ backend = 'nccl' # 'nccl', 'gloo', etc.
 # system
 device = 'cuda' # examples: 'cpu', 'cuda', 'cuda:0', 'cuda:1' etc., or try 'mps' on macbooks
 dtype = 'bfloat16' if torch.cuda.is_available() and torch.cuda.is_bf16_supported() else 'float16' # 'float32', 'bfloat16', or 'float16', the latter will auto implement a GradScaler
-compile = True # use PyTorch 2.0 to compile the model to be faster
+compile = False # use PyTorch 2.0 to compile the model to be faster
 # -----------------------------------------------------------------------------
 config_keys = [k for k,v in globals().items() if not k.startswith('_') and isinstance(v, (int, float, bool, str))]
 exec(open('configurator.py').read()) # overrides from command line or config file
 config = {k: globals()[k] for k in config_keys} # will be useful for logging
 # -----------------------------------------------------------------------------
+
+
 
 # various inits, derived attributes, I/O setup
 ddp = int(os.environ.get('RANK', -1)) != -1 # is this a ddp run?
@@ -146,19 +162,11 @@ if os.path.exists(meta_path):
 # model init
 model_args = dict(n_layer=n_layer, n_head=n_head, n_embd=n_embd, block_size=block_size,
                   bias=bias, vocab_size=None, dropout=dropout) # start with model_args from command line
-if init_from == 'scratch':
-    # init a new model from scratch
-    print("Initializing a new model from scratch")
-    # determine the vocab size we'll use for from-scratch training
-    if meta_vocab_size is None:
-        print("defaulting to vocab_size of GPT-2 to 50304 (50257 rounded up for efficiency)")
-    model_args['vocab_size'] = meta_vocab_size if meta_vocab_size is not None else 50304
-    gptconf = GPTConfig(**model_args)
-    model = GPT(gptconf)
-elif init_from == 'resume':
-    print(f"Resuming training from {out_dir}")
+
+if os.path.exists("out/ckpt_latest.pt"):
+    print(f"Resuming training from out/ckpt_latest.pt")
     # resume training from a checkpoint.
-    ckpt_path = os.path.join(out_dir, 'ckpt.pt')
+    ckpt_path = "out/ckpt_latest.pt"
     checkpoint = torch.load(ckpt_path, map_location=device)
     checkpoint_model_args = checkpoint['model_args']
     # force these config attributes to be equal otherwise we can't even resume training
@@ -178,14 +186,50 @@ elif init_from == 'resume':
     model.load_state_dict(state_dict)
     iter_num = checkpoint['iter_num']
     best_val_loss = checkpoint['best_val_loss']
-elif init_from.startswith('gpt2'):
-    print(f"Initializing from OpenAI GPT-2 weights: {init_from}")
-    # initialize from OpenAI GPT-2 weights
-    override_args = dict(dropout=dropout)
-    model = GPT.from_pretrained(init_from, override_args)
-    # read off the created config params, so we can store them into checkpoint correctly
-    for k in ['n_layer', 'n_head', 'n_embd', 'block_size', 'bias', 'vocab_size']:
-        model_args[k] = getattr(model.config, k)
+else:
+    if init_from == 'scratch':
+        # init a new model from scratch
+        print("Initializing a new model from scratch")
+        # determine the vocab size we'll use for from-scratch training
+        if meta_vocab_size is None:
+            print("defaulting to vocab_size of GPT-2 to 50304 (50257 rounded up for efficiency)")
+        model_args['vocab_size'] = meta_vocab_size if meta_vocab_size is not None else 50304
+        gptconf = GPTConfig(**model_args)
+        model = GPT(gptconf)
+    elif init_from == 'resume':
+        print(f"Resuming training from {out_dir}")
+        # resume training from a checkpoint.
+        ckpt_path = os.path.join(out_dir, 'ckpt.pt')
+        checkpoint = torch.load(ckpt_path, map_location=device)
+        checkpoint_model_args = checkpoint['model_args']
+        # force these config attributes to be equal otherwise we can't even resume training
+        # the rest of the attributes (e.g. dropout) can stay as desired from command line
+        for k in ['n_layer', 'n_head', 'n_embd', 'block_size', 'bias', 'vocab_size']:
+            model_args[k] = checkpoint_model_args[k]
+        # create the model
+        gptconf = GPTConfig(**model_args)
+        model = GPT(gptconf)
+        state_dict = checkpoint['model']
+        # fix the keys of the state dictionary :(
+        # honestly no idea how checkpoints sometimes get this prefix, have to debug more
+        unwanted_prefix = '_orig_mod.'
+        for k,v in list(state_dict.items()):
+            if k.startswith(unwanted_prefix):
+                state_dict[k[len(unwanted_prefix):]] = state_dict.pop(k)
+        model.load_state_dict(state_dict)
+        iter_num = checkpoint['iter_num']
+        best_val_loss = checkpoint['best_val_loss']
+    elif init_from.startswith('gpt2'):
+        print(f"Initializing from OpenAI GPT-2 weights: {init_from}")
+        # initialize from OpenAI GPT-2 weights
+        override_args = dict(dropout=dropout)
+        model = GPT.from_pretrained(init_from, override_args)
+        # read off the created config params, so we can store them into checkpoint correctly
+        for k in ['n_layer', 'n_head', 'n_embd', 'block_size', 'bias', 'vocab_size']:
+            model_args[k] = getattr(model.config, k)
+
+
+
 # crop down the model block size if desired, using model surgery
 if block_size < model.config.block_size:
     model.crop_block_size(block_size)
@@ -252,12 +296,26 @@ t0 = time.time()
 local_iter_num = 0 # number of iterations in the lifetime of this process
 raw_model = model.module if ddp else model # unwrap DDP container if needed
 running_mfu = -1.0
+
 while True:
 
     # determine and set the learning rate for this iteration
     lr = get_lr(iter_num) if decay_lr else learning_rate
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
+
+
+    if iter_num % save_interval == 0 and master_process:
+        checkpoint = {
+            'model': raw_model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'model_args': model_args,
+            'iter_num': iter_num,
+            'best_val_loss': best_val_loss,
+            'config': config,
+        }
+        print(f"saving checkpoint to {out_dir}")
+        torch.save(checkpoint, os.path.join(out_dir, 'ckpt_latest.pt'))
 
     # evaluate the loss on train/val sets and write checkpoints
     if iter_num % eval_interval == 0 and master_process:
@@ -283,7 +341,11 @@ while True:
                     'config': config,
                 }
                 print(f"saving checkpoint to {out_dir}")
-                torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
+                torch.save(checkpoint, os.path.join(out_dir, 'ckpt_best.pt'))
+
+
+
+
     if iter_num == 0 and eval_only:
         break
 
