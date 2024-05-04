@@ -30,7 +30,7 @@ Train gpt-2 on sample dataset:
 $ python train.py config/train_toy_gpt2.py
 ```
 
-Train gpt-2 on full dataset:
+Train gpt-2 on full dataset: Copy train.bin, val.bin files to `data/openwebtext/`
 ```
 $ python train.py config/train_gpt2.py
 ```
