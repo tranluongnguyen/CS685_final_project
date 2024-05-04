@@ -25,7 +25,7 @@ if __name__ == '__main__':
     # owt by default only contains the 'train' split, so create a test split
     split_dataset = dataset["train"].train_test_split(test_size=0.0005, seed=2357, shuffle=True)
     split_dataset['val'] = split_dataset.pop('test') # rename the test split to val
-
+    split_dataset['train'] = split_dataset['train'].select(range(2000000))
     # this results in:
     # >>> split_dataset
     # DatasetDict({

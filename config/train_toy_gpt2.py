@@ -13,7 +13,7 @@ dataset = 'toy-openwebtext'
 
 
 
-batch_size = 32
+batch_size = 8
 block_size = 1024
 gradient_accumulation_steps = 1
 
