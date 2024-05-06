@@ -196,7 +196,7 @@ model.to(device)
 scaler = torch.cuda.amp.GradScaler(enabled=(dtype == 'float16'))
 
 # optimizer
-optimizer = model.configure_optimizers(weight_decay, learning_rate, (beta1, beta2), device_type)
+optimizer, token_optimizer = model.configure_optimizers(weight_decay, learning_rate, (beta1, beta2), device_type)
 if init_from == 'resume':
     optimizer.load_state_dict(checkpoint['optimizer'])
 checkpoint = None # free up memory
@@ -259,6 +259,9 @@ while True:
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
+    for param_group in token_optimizer.param_groups:
+        param_group['lr'] = lr
+
     # evaluate the loss on train/val sets and write checkpoints
     if iter_num % eval_interval == 0 and master_process:
         losses = estimate_loss()
@@ -277,6 +280,7 @@ while True:
                 checkpoint = {
                     'model': raw_model.state_dict(),
                     'optimizer': optimizer.state_dict(),
+                    'token_optimizer': token_optimizer.state_dict(),
                     'model_args': model_args,
                     'iter_num': iter_num,
                     'best_val_loss': best_val_loss,
@@ -306,12 +310,15 @@ while True:
     # clip the gradient
     if grad_clip != 0.0:
         scaler.unscale_(optimizer)
+        scaler.unscale_(token_optimizer)
         torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
     # step the optimizer and scaler if training in fp16
     scaler.step(optimizer)
+    scaler.step(token_optimizer)
     scaler.update()
     # flush the gradients as soon as we can, no need for this memory anymore
     optimizer.zero_grad(set_to_none=True)
+    token_optimizer.zero_grad(set_to_none=True)
 
     # timing and logging
     t1 = time.time()

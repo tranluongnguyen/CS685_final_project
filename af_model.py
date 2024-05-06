@@ -284,9 +284,24 @@ class GPT(nn.Module):
 
 
         body_optimizer = torch.optim.AdamW(body_optim_groups, lr=learning_rate, betas=betas, **extra_args)
+
+
+        token_param_dict = {pn: p for pn, p in param_dict.items() if p.requires_grad and (pn == 'transformer.wte.weight' or pn == 'transformer.wpe.weight')}
+        token_decay_params = [p for n, p in token_param_dict.items() if p.dim() >= 2]
+        token_nodecay_params = [p for n, p in token_param_dict.items() if p.dim() < 2]
+        token_optim_groups = [
+            {'params': token_decay_params, 'weight_decay': weight_decay},
+            {'params': token_nodecay_params, 'weight_decay': 0.0}
+        ]
+        num_token_decay_params = sum(p.numel() for p in token_decay_params)
+        num_token_nodecay_params = sum(p.numel() for p in token_nodecay_params)
+        print(f"num body decayed parameter tensors: {len(token_decay_params)}, with {num_token_decay_params:,} parameters")
+        print(f"num body non-decayed parameter tensors: {len(token_nodecay_params)}, with {num_token_nodecay_params:,} parameters")
+        token_optimizer = torch.optim.AdamW(token_optim_groups, lr=learning_rate, betas=betas, **extra_args)
+
         print(f"using fused AdamW: {use_fused}")
 
-        return body_optimizer
+        return body_optimizer, token_optimizer
 
     def estimate_mfu(self, fwdbwd_per_iter, dt):
         """ estimate model flops utilization (MFU) in units of A100 bfloat16 peak FLOPS """
