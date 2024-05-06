@@ -66,7 +66,7 @@ decay_lr = True # whether to decay the learning rate
 warmup_iters = 2000 # how many steps to warm up for
 lr_decay_iters = 600000 # should be ~= max_iters per Chinchilla
 min_lr = 6e-5 # minimum learning rate, should be ~= learning_rate/10 per Chinchilla
-reset_interval = 100
+reset_interval = 50
 # DDP settings
 backend = 'nccl' # 'nccl', 'gloo', etc.
 # system
@@ -307,6 +307,7 @@ while True:
     if iter_num == 0 and eval_only:
         break
     if not iter_num % reset_interval:
+        print(f"Reset embedidng: loss {lossf:.4f}, time {dt*1000:.2f}ms, mfu {running_mfu*100:.2f}%")
         model.reset_token_embedding()
     # forward backward update, with optional gradient accumulation to simulate larger batch size
     # and using the GradScaler if data type is float16
