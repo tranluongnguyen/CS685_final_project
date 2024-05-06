@@ -167,6 +167,10 @@ class GPT(nn.Module):
         elif isinstance(module, nn.Embedding):
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
+    def reset_token_embedding(self):
+        torch.nn.init.normal_(self.transformer.wpe.weight, mean=0.0, std=0.02)
+        torch.nn.init.normal_(self.transformer.wpe.weight, mean=0.0, std=0.02)
+
     def forward(self, idx, targets=None):
         device = idx.device
         b, t = idx.size()
