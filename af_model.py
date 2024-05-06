@@ -295,8 +295,8 @@ class GPT(nn.Module):
         ]
         num_token_decay_params = sum(p.numel() for p in token_decay_params)
         num_token_nodecay_params = sum(p.numel() for p in token_nodecay_params)
-        print(f"num body decayed parameter tensors: {len(token_decay_params)}, with {num_token_decay_params:,} parameters")
-        print(f"num body non-decayed parameter tensors: {len(token_nodecay_params)}, with {num_token_nodecay_params:,} parameters")
+        print(f"num token decayed parameter tensors: {len(token_decay_params)}, with {num_token_decay_params:,} parameters")
+        print(f"num token non-decayed parameter tensors: {len(token_nodecay_params)}, with {num_token_nodecay_params:,} parameters")
         token_optimizer = torch.optim.AdamW(token_optim_groups, lr=learning_rate, betas=betas, **extra_args)
 
         print(f"using fused AdamW: {use_fused}")

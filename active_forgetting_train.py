@@ -66,6 +66,7 @@ decay_lr = True # whether to decay the learning rate
 warmup_iters = 2000 # how many steps to warm up for
 lr_decay_iters = 600000 # should be ~= max_iters per Chinchilla
 min_lr = 6e-5 # minimum learning rate, should be ~= learning_rate/10 per Chinchilla
+reset_interval = 100
 # DDP settings
 backend = 'nccl' # 'nccl', 'gloo', etc.
 # system
@@ -255,6 +256,7 @@ running_mfu = -1.0
 while True:
 
     # determine and set the learning rate for this iteration
+    print("Check current iteration", iter_num)
     lr = get_lr(iter_num) if decay_lr else learning_rate
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
