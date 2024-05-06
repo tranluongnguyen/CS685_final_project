@@ -306,9 +306,6 @@ while True:
                 torch.save(checkpoint, os.path.join(out_dir, 'ckpt.pt'))
     if iter_num == 0 and eval_only:
         break
-    if not iter_num % reset_interval:
-        print(f"Reset embedidng: loss {lossf:.4f}, time {dt*1000:.2f}ms, mfu {running_mfu*100:.2f}%")
-        model.reset_token_embedding()
     # forward backward update, with optional gradient accumulation to simulate larger batch size
     # and using the GradScaler if data type is float16
     for micro_step in range(gradient_accumulation_steps):
@@ -332,7 +329,12 @@ while True:
         torch.nn.utils.clip_grad_norm_(model.parameters(), grad_clip)
     # step the optimizer and scaler if training in fp16
     scaler.step(optimizer)
-    scaler.step(token_optimizer)
+    if iter_num % reset_interval == 0 and iter_num > 0:
+        lossf = loss.item() * gradient_accumulation_steps
+        print(f"Reset embedidng: loss {lossf:.4f}")
+        model.reset_token_embedding()
+    else:
+        scaler.step(token_optimizer)
     scaler.update()
     # flush the gradients as soon as we can, no need for this memory anymore
     optimizer.zero_grad(set_to_none=True)
