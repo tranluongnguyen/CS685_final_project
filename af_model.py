@@ -168,7 +168,7 @@ class GPT(nn.Module):
             torch.nn.init.normal_(module.weight, mean=0.0, std=0.02)
 
     def reset_token_embedding(self):
-        torch.nn.init.normal_(self.transformer.wpe.weight, mean=0.0, std=0.02)
+        torch.nn.init.normal_(self.transformer.wte.weight, mean=0.0, std=0.02)
         torch.nn.init.normal_(self.transformer.wpe.weight, mean=0.0, std=0.02)
 
     def forward(self, idx, targets=None):
