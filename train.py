@@ -17,6 +17,7 @@ $ torchrun --nproc_per_node=8 --nnodes=2 --node_rank=1 --master_addr=123.456.123
 """
 
 import os
+import glob
 import time
 import math
 import pickle
@@ -167,7 +168,16 @@ if os.path.exists("out/ckpt_latest.pt"):
     print(f"Resuming training from out/ckpt_latest.pt")
     # resume training from a checkpoint.
     ckpt_path = "out/ckpt_latest.pt"
-    checkpoint = torch.load(ckpt_path, map_location=device)
+
+    try:
+        checkpoint = torch.load(ckpt_path, map_location=device)
+    except:
+
+        possible_ckpt_paths = sorted(glob.glob("out/ckpt_iter_*.pt"))
+        latest_path = possible_ckpt_paths[-1]
+        checkpoint = torch.load(ckpt_path, map_location=device)
+        print(f"Cannot load latest checkpoint, load from {latest_path}")
+
     checkpoint_model_args = checkpoint['model_args']
     # force these config attributes to be equal otherwise we can't even resume training
     # the rest of the attributes (e.g. dropout) can stay as desired from command line
@@ -316,6 +326,18 @@ while True:
         }
         print(f"saving checkpoint to {out_dir}")
         torch.save(checkpoint, os.path.join(out_dir, 'ckpt_latest.pt'))
+    
+    if iter_num % 3000 == 0 and iter_num > 1000 and master_process:
+        checkpoint = {
+            'model': raw_model.state_dict(),
+            'optimizer': optimizer.state_dict(),
+            'model_args': model_args,
+            'iter_num': iter_num,
+            'best_val_loss': best_val_loss,
+            'config': config,
+        }
+        torch.save(checkpoint, os.path.join(out_dir, f'ckpt_iter_{iter_num}.pt'))
+        print(f"saving checkpoint to ckpt_iter_{iter_num}.pt")
 
     # evaluate the loss on train/val sets and write checkpoints
     if iter_num % eval_interval == 0 and master_process:
