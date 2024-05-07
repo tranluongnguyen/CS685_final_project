@@ -16,3 +16,4 @@ wandb/
 scripts/slurm_el.sh
 scripts/slurm_npl.sh
 scripts/slurm_el_act.sh
+scripts/slurm_act_el.sh
