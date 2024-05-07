@@ -276,7 +276,7 @@ while True:
         param_group['lr'] = lr
 
     for param_group in token_optimizer.param_groups:
-        param_group['token_lr'] = lr
+        param_group['token_lr'] = token_lr
 
     # evaluate the loss on train/val sets and write checkpoints
     if iter_num % eval_interval == 0 and master_process:
