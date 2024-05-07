@@ -44,11 +44,11 @@ $ torchrun --standalone --nproc_per_node=2 train.py config/train_gpt2.py
 Train gpt-2 with active forgetting mechanism full dataset:
 
 ```
-$ python active_forgetting_train.py config/train_gpt2.py
+$ python active_forgetting_train.py config/af_train_gpt2.py
 ```
 or:
 ```
-$ torchrun --standalone --nproc_per_node=2 active_forgetting_train.py config/train_gpt2.py
+$ torchrun --standalone --nproc_per_node=2 active_forgetting_train.py config/af_train_gpt2.py
 ```
 
 ## baselines
