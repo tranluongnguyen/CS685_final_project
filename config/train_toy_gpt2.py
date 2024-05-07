@@ -33,7 +33,7 @@ reset_interval = 10
 # eval stuff
 eval_interval = 250
 eval_iters = 200
-log_interval = 10
+log_interval = 100
 always_save_checkpoint = False
 
 # weight decay
