@@ -26,7 +26,7 @@ import glob
 import numpy as np
 import torch
 from torch.nn.parallel import DistributedDataParallel as DDP
-from torch.distributed import init_process_group, destroy_process_group
+from torch.distributed import init_process_group, destroy_process_group, broadcast
 
 from af_model import GPTConfig, GPT
 
@@ -398,8 +398,37 @@ while True:
     # step the optimizer and scaler if training in fp16
     scaler.step(optimizer)
     if iter_num % reset_interval == 0 and iter_num > 0:
+    # if True: # NOTE debugging
         lossf = loss.item() * gradient_accumulation_steps
-        model.reset_token_embedding()
+        if not ddp:
+            model.reset_token_embedding() #model.module.reset_token_embedding()
+        else:
+            # NOTE src: https://github.com/facebookresearch/language-model-plasticity/blob/4159c45368c0a8473ceca61a644f8a18c2d3b970/language/fairseq_cli/train.py#L357-L384
+            if master_process:
+                mean=0.0
+                std=0.02
+                trans_wte_weight = model.module.transformer.wte.weight
+                trans_wpe_weight = model.module.transformer.wpe.weight
+                torch.nn.init.normal_(trans_wte_weight, mean, std)
+                torch.nn.init.normal_(trans_wpe_weight, mean, std)
+                # torch.nn.init.normal_(self.transformer.wte.weight, mean=0.0, std=0.02)
+                # torch.nn.init.normal_(self.transformer.wpe.weight, mean=0.0, std=0.02)
+            else:
+                trans_wte_weight = torch.zeros_like(model.module.transformer.wte.weight)
+                trans_wpe_weight = torch.zeros_like(model.module.transformer.wpe.weight)
+            trans_wte_weight = trans_wte_weight.detach()
+            trans_wpe_weight = trans_wpe_weight.detach()
+
+            broadcast(trans_wte_weight, src=0)
+            broadcast(trans_wpe_weight, src=0)
+
+            model.module.copy_token_embedding(trans_wte_weight, trans_wpe_weight)
+        # if not master_process: # rank !=0 collecting the distributed fp32 embeddings
+        #     with torch.no_grad():
+        #         fp32_params_embed.copy_(embed_values)   
+        if master_process:
+            print("Reset embedding successfully")
+        # model.reset_token_embedding()
     else:
         scaler.step(token_optimizer)
     scaler.update()

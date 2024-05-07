@@ -171,6 +171,14 @@ class GPT(nn.Module):
         torch.nn.init.normal_(self.transformer.wte.weight, mean=0.0, std=0.02)
         torch.nn.init.normal_(self.transformer.wpe.weight, mean=0.0, std=0.02)
 
+    
+    def copy_token_embedding(self, wte_w, wpe_w):
+        with torch.no_grad():
+            self.transformer.wte.weight.copy_(wte_w)
+            self.transformer.wpe.weight.copy_(wpe_w)
+            # torch.nn.init.normal_(self.transformer.wte.weight, mean=0.0, std=0.02)
+            # torch.nn.init.normal_(self.transformer.wpe.weight, mean=0.0, std=0.02)
+
     def forward(self, idx, targets=None):
         device = idx.device
         b, t = idx.size()
