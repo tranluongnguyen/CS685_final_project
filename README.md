@@ -41,6 +41,16 @@ or:
 $ torchrun --standalone --nproc_per_node=2 train.py config/train_gpt2.py
 ```
 
+Train gpt-2 with active forgetting mechanism full dataset:
+
+```
+$ python active_forgetting_train.py config/train_gpt2.py
+```
+or:
+```
+$ torchrun --standalone --nproc_per_node=2 active_forgetting_train.py config/train_gpt2.py
+```
+
 ## baselines
 
 OpenAI GPT-2 checkpoints allow us to get some baselines in place for openwebtext. We can get the numbers as follows:
