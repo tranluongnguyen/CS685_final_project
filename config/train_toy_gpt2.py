@@ -28,12 +28,12 @@ lr_decay_iters = 500 # make equal to max_iters usually
 min_lr = 1e-4 # learning_rate / 10 usually
 beta2 = 0.99 # make a bit bigger because number of tokens per iter is small
 warmup_iters = 100 # not super necessary potentially
-reset_interval = 10
+reset_interval = 100
 
 # eval stuff
 eval_interval = 250
 eval_iters = 200
-log_interval = 100
+log_interval = 10
 always_save_checkpoint = False
 
 # weight decay
