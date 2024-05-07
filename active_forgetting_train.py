@@ -66,7 +66,7 @@ decay_lr = True # whether to decay the learning rate
 warmup_iters = 2000 # how many steps to warm up for
 lr_decay_iters = 600000 # should be ~= max_iters per Chinchilla
 min_lr = 6e-5 # minimum learning rate, should be ~= learning_rate/10 per Chinchilla
-reset_interval = 50
+reset_interval = 100
 # DDP settings
 backend = 'nccl' # 'nccl', 'gloo', etc.
 # system
