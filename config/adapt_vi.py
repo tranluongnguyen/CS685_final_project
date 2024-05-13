@@ -27,3 +27,4 @@ weight_decay = 1e-1
 #resume
 init_from = 'resume'
 dataset = 'vietnamese'
+en_model_path = './best.ckpt'

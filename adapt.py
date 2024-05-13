@@ -52,6 +52,7 @@ eval_iters = 200
 eval_only = False # if True, script exits right after the first eval
 always_save_checkpoint = True # if True, always save a checkpoint after each eval
 init_from = 'scratch' # 'scratch' or 'resume' or 'gpt2*'
+en_model_path = './best.ckpt'
 
 # resume_path = None
 # wandb logging
@@ -207,9 +208,9 @@ else:
         gptconf = GPTConfig(**model_args)
         model = GPT(gptconf)
     elif init_from == 'resume':
-        print(f"Resuming training from {out_dir}")
+        print(f"Resuming training from {en_model_path}")
         # resume training from a checkpoint.
-        ckpt_path = os.path.join(out_dir, 'ckpt.pt')
+        ckpt_path = en_model_path
         checkpoint = torch.load(ckpt_path, map_location=device)
         checkpoint_model_args = checkpoint['model_args']
         # force these config attributes to be equal otherwise we can't even resume training
