@@ -8,7 +8,13 @@ import torch
 import tiktoken
 from model import GPTConfig, GPT
 
+import transformers
+
 # -----------------------------------------------------------------------------
+model_path = "out/adapt_french_active_forget/ckpt_iter_8000.pt"
+# model_path = "out/lowresource_std_vietnamese/ckpt_latest.pt"
+# model_path = "out/standard/ckpt_iter_63000.pt"
+
 init_from = 'resume' # either 'resume' (from an out_dir) or a gpt2 variant (e.g. 'gpt2-xl')
 out_dir = 'out' # ignored if init_from is not 'resume'
 start = "\n" # or "<|endoftext|>" or etc. Can also specify a file, use as: "FILE:prompt.txt"
@@ -32,7 +38,23 @@ ptdtype = {'float32': torch.float32, 'bfloat16': torch.bfloat16, 'float16': torc
 ctx = nullcontext() if device_type == 'cpu' else torch.amp.autocast(device_type=device_type, dtype=ptdtype)
 
 # model
-if init_from == 'resume':
+if os.path.exists(model_path):
+    print(f"Loading self-training model from {model_path}")
+    ckpt_path = model_path
+    checkpoint = torch.load(ckpt_path, map_location=device)
+    gptconf = GPTConfig(**checkpoint['model_args'])
+
+    model = GPT(gptconf)
+
+    state_dict = checkpoint['model']
+    unwanted_prefix = '_orig_mod.'
+    for k,v in list(state_dict.items()):
+        if k.startswith(unwanted_prefix):
+            state_dict[k[len(unwanted_prefix):]] = state_dict.pop(k)
+
+    # breakpoint()
+    model.load_state_dict(state_dict)
+elif init_from == 'resume':
     # init from a model saved in a specific directory
     ckpt_path = os.path.join(out_dir, 'ckpt.pt')
     checkpoint = torch.load(ckpt_path, map_location=device)
@@ -58,6 +80,9 @@ load_meta = False
 if init_from == 'resume' and 'config' in checkpoint and 'dataset' in checkpoint['config']: # older checkpoints might not have these...
     meta_path = os.path.join('data', checkpoint['config']['dataset'], 'meta.pkl')
     load_meta = os.path.exists(meta_path)
+
+
+
 if load_meta:
     print(f"Loading meta from {meta_path}...")
     with open(meta_path, 'rb') as f:
@@ -72,6 +97,23 @@ else:
     enc = tiktoken.get_encoding("gpt2")
     encode = lambda s: enc.encode(s, allowed_special={"<|endoftext|>"})
     decode = lambda l: enc.decode(l)
+
+# NOTE overide the tokenizer if we are using a different language
+if "vietnamese" in model_path:
+    print("override vietnamese tokenizer")
+    tokenizer = transformers.AutoTokenizer.from_pretrained("data/vietnamese/vi_tokenizer")
+    encode = lambda s: tokenizer.encode(s)
+    decode = lambda l: tokenizer.decode(l)
+elif "french" in model_path:
+    print("override french tokenizer")
+    tokenizer = transformers.AutoTokenizer.from_pretrained("data/french/fr_tokenizer")
+    encode = lambda s: tokenizer.encode(s)
+    decode = lambda l: tokenizer.decode(l)
+elif "chinese" in model_path:
+    print("override chinese tokenizer")
+    tokenizer = transformers.AutoTokenizer.from_pretrained("data/chinese/zh_tokenizer")
+    encode = lambda s: tokenizer.encode(s)
+    decode = lambda l: tokenizer.decode(l)
 
 # encode the beginning of the prompt
 if start.startswith('FILE:'):
