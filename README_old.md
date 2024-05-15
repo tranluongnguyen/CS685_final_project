@@ -17,7 +17,7 @@ Dependencies:
 -  `wandb` for optional logging <3
 -  `tqdm` for progress bars <3
 
-## Pretraining GPT-2
+## reproducing GPT-2
 
 Prepare dataset (skip if download data from the link below):
 
@@ -25,6 +25,10 @@ Prepare dataset (skip if download data from the link below):
 $ python data/openwebtext/prepare.py
 ```
 
+Train gpt-2 on sample dataset (toy dataset is included):
+```
+$ python train.py config/train_toy_gpt2.py
+```
 
 Train gpt-2 on full dataset:
 
@@ -47,50 +51,7 @@ or:
 $ torchrun --standalone --nproc_per_node=2 active_forgetting_train.py config/af_train_gpt2.py
 ```
 
-Train gpt-2 with noise active forgetting mechanism full dataset:
-
-```
-$ python noise_train.py config/noise_train_gpt2.py
-```
-or:
-```
-$ torchrun --standalone --nproc_per_node=2 noise_train.py config/noise_train_gpt2.py
-```
-
-
-
-## Adapt on new low-resource datasets
-### Prepare data for 3 languages (vietnamese, chinese, and french)
-
-### Re-train the language-specific token embedding
-Remember to replace the `pretrain_path` in the config file `config/train_gpt2_adapt_<language>.py` with the path to the corresponding pretrained weights (including the stndard, active forgetting and noise active forgetting pretrained weights).
-
-```
-$ python train_adapt.py config/train_gpt2_adapt_<language>.py
-```
-or:
-```
-$ torchrun --standalone --nproc_per_node=2 train_adapt.py config/train_gpt2_adapt_<language>.py
-```
-where `<language>` is in `french, vietnamese, chinese`
-
-## Adapt on new tasks
-### Prepare data for MLQA and XLSUM datasets (on english)
-
-### Finetune the transformer body of the pretrained models
-
-Remember to replace the `pretrain_path` in the config file `config/train_gpt2_<new_task_dataset>.py` with the path to the corresponding pretrained weights (including the stndard, active forgetting and noise active forgetting pretrained weights).
-
-```
-$ python train_newtask.py config/train_gpt2_<new_task_dataset>.py
-```
-or:
-```
-$ torchrun --standalone --nproc_per_node=2 train_newtask.py config/train_gpt2_<new_task_dataset>.py
-```
-where `<new_task_dataset>` is in `xlsum_en, mlqa_en`
-
-<!-- ## baselines
+## baselines
 
 OpenAI GPT-2 checkpoints allow us to get some baselines in place for openwebtext. We can get the numbers as follows:
 
@@ -188,7 +149,7 @@ For some context on this repository, GPT, and language modeling it might be help
 
 For more questions/discussions feel free to stop by **#nanoGPT** on Discord:
 
-[![](https://dcbadge.vercel.app/api/server/3zy8kqD9Cp?compact=true&style=flat)](https://discord.gg/3zy8kqD9Cp) -->
+[![](https://dcbadge.vercel.app/api/server/3zy8kqD9Cp?compact=true&style=flat)](https://discord.gg/3zy8kqD9Cp)
 
 ## acknowledgements
 
