@@ -118,9 +118,14 @@ $ python sample.py \
     --num_samples=5 --max_new_tokens=100
 
 python sample.py \
-    --start="Dans un village tranquille au bord de la mer" \
+    --start="What is the answer to life, the universe, and everything?" \
     --num_samples=5 --max_new_tokens=100
 ```
+
+```
+python sample.py \
+    --start='Context:  In 1994, five unnamed civilian contractors and the widows of contractors Walter Kasza and Robert Frost sued the USAF and the United States Environmental Protection Agency. Their suit, in which they were represented by George Washington University law professor Jonathan Turley, alleged they had been present when large quantities of unknown chemicals had been burned in open pits and trenches at Groom. Biopsies taken from the complainants were analyzed by Rutgers University biochemists, who found high levels of dioxin, dibenzofuran, and trichloroethylene in their body fat. The complainants alleged they had sustained skin, liver, and respiratory injuries due to their work at Groom, and that this had contributed to the deaths of Frost and Kasza. The suit sought compensation for the injuries they had sustained, claiming the USAF had illegally handled toxic materials, and that the EPA had failed in its duty to enforce the Resource Conservation and Recovery Act (which governs handling of dangerous materials). They also sought detailed information about the chemicals to which they were allegedly exposed, hoping this would facilitate the medical treatment of survivors. Congressman Lee H. Hamilton, former chairman of the House Intelligence Committee, told 60 Minutes reporter Lesley Stahl, "The Air Force is classifying all information about Area 51 in order to protect themselves from a lawsuit." \nQuestion: Who analyzed the biopsies? \nAnswer: '\
+    --num_samples=1 --max_new_tokens=1000
 
 If you'd like to sample from a model you trained, use the `--out_dir` to point the code appropriately. You can also prompt the model with some text from a file, e.g. `$ python sample.py --start=FILE:prompt.txt`.
 

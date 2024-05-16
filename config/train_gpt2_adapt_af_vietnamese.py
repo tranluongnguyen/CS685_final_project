@@ -18,16 +18,30 @@ gradient_accumulation_steps = 5 * 8
 learning_rate = 6e-4
 
 # this makes total number of tokens be 300B
-warmup_iters = 500
-max_iters = 20000
-lr_decay_iters = 20000
+# warmup_iters = 500
+# max_iters = 20000
+# lr_decay_iters = 20000
+# # reset_interval = 100000
+
+# #
+# save_iter_interval = 2000
+
+# # eval stuff
+# eval_interval = 1000
+# eval_iters = 200
+# log_interval = 10
+
+# this makes total number of tokens be 300B
+warmup_iters = 100
+max_iters = 1200
+lr_decay_iters = 1200
 # reset_interval = 100000
 
 #
-save_iter_interval = 2000
+save_iter_interval = 100
 
 # eval stuff
-eval_interval = 1000
+eval_interval = 100
 eval_iters = 200
 log_interval = 10
 

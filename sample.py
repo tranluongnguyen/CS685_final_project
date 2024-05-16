@@ -11,7 +11,8 @@ from model import GPTConfig, GPT
 import transformers
 
 # -----------------------------------------------------------------------------
-model_path = "out/adapt_french_active_forget/ckpt_iter_8000.pt"
+# model_path = "/home/tdngo/Workspace/practices/685-NLP/CS685_final_project/pretrains/ckpt_best_mlqa_en_standard.pt"
+model_path = "/home/tdngo/Workspace/practices/685-NLP/CS685_final_project/pretrains/ckpt_best_standard.pt"
 # model_path = "out/lowresource_std_vietnamese/ckpt_latest.pt"
 # model_path = "out/standard/ckpt_iter_63000.pt"
 
