@@ -228,6 +228,11 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
     predict_answers = []
 
     eos_token = enc.eot_token
+    if "vietnamese" or "french" or "chinese" in embed_path:
+        eos_token = tokenizer.eos_token_id
+    else:
+        eos_token = enc.eot_token
+    print('eos', eos_token)
     with open(gold_file, 'wb') as f:
         pickle.dump(qa_pairs, f)
     with open(pred_file, 'a') as f:
