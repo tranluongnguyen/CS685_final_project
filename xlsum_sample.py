@@ -227,7 +227,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
     with open(pred_file, 'a') as f:
         with torch.no_grad():
             with ctx:
-                for pair in qa_pairs:
+                for pair in tqdm(qa_pairs):
                     start_ids = encode(pair[0])
                     x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
                     if x.size(1)+max_new_tokens > model.config.block_size:
@@ -241,6 +241,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
                     ans = decode(y[0][start_idx:end_idx].tolist())
                     ans = ans.replace('\n', ' ').replace('\r', '')
                     predict_answers.append(ans)
+                    print(ans)
                     f.write(ans)
             
 
