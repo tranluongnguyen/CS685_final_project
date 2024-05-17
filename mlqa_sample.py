@@ -140,7 +140,7 @@ def generate_mlqa(model, text, max_new_tokens):
       with ctx:
         start_ids = encode(text)
         print(text)
-        print("decode: " decode(start_ids))
+        print("decode: ", decode(start_ids))
         x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
         idx = x
         ids_answer = []
