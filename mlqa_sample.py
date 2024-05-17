@@ -230,6 +230,7 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
         if ans[-1] != '\n':
             ans += '\n'
         f.write(ans)
+        break
 
 # evaluate_mlqa()
 evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_af_predict.txt', gold_file='mlqa_en.pkl')
