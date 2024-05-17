@@ -193,6 +193,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
     predict_answers = []
     with open(gold_file, 'wb') as f:
         pickle.dump(qa_pairs, f)
+    error=0
     with open(pred_file, 'a') as f:
       for pair in tqdm(qa_pairs):
         ids_qa, ids_ans = generate_xlsum(model, pair[0], max_new_tokens)
