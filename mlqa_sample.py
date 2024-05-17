@@ -22,10 +22,10 @@ import transformers
 
 # model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
 # embed_path = "/content/drive/MyDrive/CS685/weights/vietnamese/only_embed_adapt_viet_standard.pt"
-model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
-embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_viet_af.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
+# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
+# embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_viet_af.pt"
+model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
+embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
 
 
 # model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
@@ -231,8 +231,8 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
 # evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_noise_predict.txt', gold_file='mlqa_en.pkl')
 
 # evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_std_predict.txt', gold_file='mlqa_vi.pkl')
-evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_af_predict.txt', gold_file='mlqa_vi.pkl')
-# evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_noise_predict.txt', gold_file='mlqa_vi.pkl')
+# evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_af_predict.txt', gold_file='mlqa_vi.pkl')
+evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_noise_predict.txt', gold_file='mlqa_vi.pkl')
 
 # evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_std_predict.txt', gold_file='mlqa_fr.pkl')
 # evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_af_predict.txt', gold_file='mlqa_fr.pkl')
