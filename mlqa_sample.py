@@ -15,6 +15,8 @@ import transformers
 # -----------------------------------------------------------------------------
 model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
 embed_path = "/content/drive/MyDrive/CS685/weights/french/only_embed_adapt_french_standard.pt"
+model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
+embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/french/only_embed_adapt_french_af.pt"
 # model_path = "out/lowresource_std_vietnamese/ckpt_latest.pt"
 # model_path = "out/standard/ckpt_iter_63000.pt"
 
@@ -209,6 +211,6 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
 
 # evaluate_mlqa()
 # evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_std_predict.txt, gold_file='mlqa_vi.pkl')
-evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_std_predict.txt', gold_file='mlqa_fr.pkl')
+evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_af_predict.txt', gold_file='mlqa_fr.pkl')
 
 
