@@ -172,7 +172,7 @@ def generate_xlsum(model, text, max_new_tokens):
             # else:
             #    eos_token = enc.eot_token
             eos_token = enc.eot_token
-            if idx_next[0][0].item() == eos_token:
+            if idx_next[0][0].item() == eos_token and False:
               if len(ids_answer) > 1:
                 break
               else:
