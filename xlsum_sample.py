@@ -213,7 +213,7 @@ def generate_xlsum(model, text, max_new_tokens):
 
 
 def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl'):
-    print("Start eval")
+    print("Start new eval")
     ds = datasets.load_dataset('csebuetnlp/xlsum', lang)
     qa_pairs = []
     for example in ds['test']:
@@ -228,6 +228,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
         with torch.no_grad():
             with ctx:
                 for pair in tqdm(qa_pairs):
+                    print(pair)
                     start_ids = encode(pair[0])
                     x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
                     if x.size(1)+max_new_tokens > model.config.block_size:
