@@ -222,6 +222,7 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
 
 # evaluate_mlqa()
 evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_std_predict.txt', gold_file='mlqa_vi.pkl')
+evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_af_predict.txt', gold_file='mlqa_vi.pkl')
 
 # evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_std_predict.txt', gold_file='mlqa_fr.pkl')
 # evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_af_predict.txt', gold_file='mlqa_fr.pkl')
