@@ -182,12 +182,13 @@ def generate_mlqa(model, text, max_new_tokens):
                 idx_next = torch.multinomial(probs, num_samples=1)
             
             # append sampled index to the running sequence and continue
-            if "vietnamese" or "french" or "chinese" in embed_path:
-                # print(embed_path)
-            #    eos_token = tokenizer.eos_token_id
-                eos_token = enc.eot_token
-            else:
-                eos_token = enc.eot_token
+            # if "vietnamese" or "french" or "chinese" in embed_path:
+            #     # print(embed_path)
+            # #    eos_token = tokenizer.eos_token_id
+            #     eos_token = enc.eot_token
+            # else:
+            #     eos_token = enc.eot_token
+            eos_token = enc.eot_token
             if idx_next[0][0].item() == eos_token:
                 if len(ids_answer) > 1:
                     break
@@ -230,7 +231,6 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
         if ans[-1] != '\n':
             ans += '\n'
         f.write(ans)
-        break
 
 # evaluate_mlqa()
 evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_af_predict.txt', gold_file='mlqa_en.pkl')
