@@ -29,7 +29,7 @@ model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_
 embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_viet_af.pt"
 
 model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
-embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_viet_noise.pt"
+embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
 
 # model_path = "out/lowresource_std_vietnamese/ckpt_latest.pt"
 # model_path = "out/standard/ckpt_iter_63000.pt"
