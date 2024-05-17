@@ -251,6 +251,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
                     ans = decode(y[0][start_idx:end_idx].tolist())
                     ans = ans.replace('\n', ' ').replace('\r', '')
                     predict_answers.append(ans)
+                    print(ans)
                     f.write(ans+'\n')
             
 
