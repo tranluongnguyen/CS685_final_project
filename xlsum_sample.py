@@ -23,6 +23,9 @@ embed_path = "english"
 model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
 embed_path ="/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_viet_standard.pt"
 
+model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_noise.pt"
+embed_path ="/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
+
 # model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
 # embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_viet_af.pt"
 # model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
