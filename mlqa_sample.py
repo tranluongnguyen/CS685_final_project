@@ -183,17 +183,18 @@ def generate_mlqa(model, text, max_new_tokens):
             
             # append sampled index to the running sequence and continue
             if "vietnamese" or "french" or "chinese" in embed_path:
-               print(embed_path)
-               eos_token = tokenizer.eos_token_id
+                print(embed_path)
+            #    eos_token = tokenizer.eos_token_id
+                eos_token = enc.eot_token
             else:
-               eos_token = enc.eot_token
+                eos_token = enc.eot_token
             if idx_next[0][0].item() == eos_token:
-              if len(ids_answer) > 1:
-                break
-              else:
-                continue
+                if len(ids_answer) > 1:
+                    break
+                else:
+                    continue
             else:
-              ids_answer.append(idx_next[0][0].item())
+                ids_answer.append(idx_next[0][0].item())
             idx = torch.cat((idx, idx_next), dim=1)
 
         return idx, ids_answer
