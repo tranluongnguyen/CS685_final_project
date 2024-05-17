@@ -112,17 +112,17 @@ else:
     decode = lambda l: enc.decode(l)
 
 # NOTE overide the tokenizer if we are using a different language
-if "vietnamese" in model_path:
+if "vietnamese" in embed_path:
     print("override vietnamese tokenizer")
     tokenizer = transformers.AutoTokenizer.from_pretrained("data/vietnamese/vi_tokenizer")
     encode = lambda s: tokenizer.encode(s)
     decode = lambda l: tokenizer.decode(l)
-elif "french" in model_path:
+elif "french" in embed_path:
     print("override french tokenizer")
     tokenizer = transformers.AutoTokenizer.from_pretrained("data/french/fr_tokenizer")
     encode = lambda s: tokenizer.encode(s)
     decode = lambda l: tokenizer.decode(l)
-elif "chinese" in model_path:
+elif "chinese" in embed_path:
     print("override chinese tokenizer")
     tokenizer = transformers.AutoTokenizer.from_pretrained("data/chinese/zh_tokenizer")
     encode = lambda s: tokenizer.encode(s)
