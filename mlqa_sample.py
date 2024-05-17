@@ -180,6 +180,7 @@ def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
     print("Start eval")
     if 'french' in embed_path:
        ds = datasets.load_dataset('fquad', data_dir=lang)
+       ds['test'] = ds.pop('validation') # rename the test split
     else:
        ds = datasets.load_dataset('mlqa', lang)
     qa_pairs = []
