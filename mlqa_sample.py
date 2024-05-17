@@ -14,7 +14,7 @@ import transformers
 
 # -----------------------------------------------------------------------------
 model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
-embed_path = "/modelpath"
+embed_path = "/content/drive/MyDrive/CS685/weights/vietnamese/only_embed_adapt_viet_standard.pt"
 # model_path = "out/lowresource_std_vietnamese/ckpt_latest.pt"
 # model_path = "out/standard/ckpt_iter_63000.pt"
 
@@ -142,7 +142,6 @@ def generate_mlqa(model, text, max_new_tokens):
         x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
         idx = x
         ids_answer = []
-        print(idx.shape)
         for max_token in range(max_new_tokens):
             # if the sequence context is growing too long we must crop it at block_size
             idx_cond = idx if idx.size(1) <= model.config.block_size else idx[:, -model.config.block_size:]
@@ -193,6 +192,6 @@ def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
           ans += '\n'
         f.write(ans)
 
-evaluate_mlqa()
-# evaluate_mlqa(lang='mlqa.vi.vi', saved_file='mlqa_vi_std_predict.txt')
+# evaluate_mlqa()
+evaluate_mlqa(lang='mlqa.vi.vi', saved_file='mlqa_vi_std_predict.txt')
 
