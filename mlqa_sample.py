@@ -14,7 +14,7 @@ import transformers
 
 # -----------------------------------------------------------------------------
 model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
-embed_path = "/content/drive/MyDrive/CS685/weights/vietnamese/only_embed_adapt_viet_standard.pt"
+embed_path = "/content/drive/MyDrive/CS685/weights/vietnamese/only_embed_adapt_french_standard.pt"
 # model_path = "out/lowresource_std_vietnamese/ckpt_latest.pt"
 # model_path = "out/standard/ckpt_iter_63000.pt"
 
@@ -178,7 +178,10 @@ def generate_mlqa(model, text, max_new_tokens):
 
 def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
     print("Start eval")
-    ds = datasets.load_dataset('mlqa', lang)
+    if 'french' in embed_path:
+       ds = datasets.load_dataset('fquad', data_dir=lang)
+    else:
+       ds = datasets.load_dataset('mlqa', lang)
     qa_pairs = []
     error = 0
     for example in ds['test']:
@@ -199,5 +202,5 @@ def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
 
 # evaluate_mlqa()
 # evaluate_mlqa(lang='mlqa.vi.vi', saved_file='mlqa_vi_std_predict.txt')
-evaluate_mlqa(lang='mlqa.fr.fr', saved_file='mlqa_fr_std_predict.txt')
+evaluate_mlqa(lang='./fr_dataset', saved_file='mlqa_fr_std_predict.txt')
 
