@@ -13,8 +13,8 @@ import datasets
 import transformers
 
 # -----------------------------------------------------------------------------
-model_path = "/content/drive/MyDrive/Test/weights/ckpt_best_mlqa_en_standard.pt"
-embed_path = '/content/drive/MyDrive/Test/weights/ckpt_best_mlqa_en_standard.pt'
+model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
+embed_path = "/content"
 # model_path = "out/lowresource_std_vietnamese/ckpt_latest.pt"
 # model_path = "out/standard/ckpt_iter_63000.pt"
 
@@ -75,7 +75,7 @@ elif init_from.startswith('gpt2'):
 
 if os.path.exists(embed_path):
     print(f"Loading embedding params from {embed_path}")
-    embed_checkpoint = torch.load(ckpt_path, map_location='cpu')
+    embed_checkpoint = torch.load(embed_path, map_location='cpu')
     embed_state_dict = embed_checkpoint['model']
     unwanted_prefix = '_orig_mod.'
     for k,v in list(embed_state_dict.items()):
@@ -184,7 +184,7 @@ def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
         qa_pairs.append((question, example['answers']['text'][0]))
     with open(saved_file, 'a') as f:
       for pair in tqdm(qa_pairs):
-        ids_qa, ids_ans = generate_mlqa(model, pair[0], )
+        ids_qa, ids_ans = generate_mlqa(model, pair[0], max_new_tokens)
         ans = decode(ids_ans)
         if len(ans) < 1:
           error +=1
@@ -193,5 +193,6 @@ def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
           ans += '\n'
         f.write(ans)
 
-evaluate_mlqa(lang='mlqa.vi.vi', saved_file='mlqa_vi_std_predict.txt')
+evaluate_mlqa()
+# evaluate_mlqa(lang='mlqa.vi.vi', saved_file='mlqa_vi_std_predict.txt')
 
