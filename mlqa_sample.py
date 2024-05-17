@@ -183,7 +183,7 @@ def generate_mlqa(model, text, max_new_tokens):
             
             # append sampled index to the running sequence and continue
             if "vietnamese" or "french" or "chinese" in embed_path:
-                print(embed_path)
+                # print(embed_path)
             #    eos_token = tokenizer.eos_token_id
                 eos_token = enc.eot_token
             else:
