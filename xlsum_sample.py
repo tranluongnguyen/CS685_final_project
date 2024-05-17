@@ -246,12 +246,11 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
                     y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
                     end_idx = y.size(1)
                     for idx in range(y.size(1)):
-                        if y[0][idx] == eos_token:
+                        if y[0][idx] == eos_token or decode(y[0][idx]) == '<|endoftext|>':
                             end_idx = idx
                     ans = decode(y[0][start_idx:end_idx].tolist())
                     ans = ans.replace('\n', ' ').replace('\r', '')
                     predict_answers.append(ans)
-                    print(ans)
                     f.write(ans+'\n')
             
 
@@ -259,4 +258,4 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
 # evaluate_xlsum(lang='english', pred_file='xlsum_en_af_predict.txt', gold_file='xlsum_en.pkl')
 
 
-evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_std_predict.txt', gold_file='xlsum_vi.pkl')
+evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_noise_predict.txt', gold_file='xlsum_vi.pkl')
