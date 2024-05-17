@@ -183,6 +183,35 @@ def generate_xlsum(model, text, max_new_tokens):
 
         return idx, ids_answer
 
+# def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl'):
+#     print("Start eval")
+#     ds = datasets.load_dataset('csebuetnlp/xlsum', lang)
+#     qa_pairs = []
+#     for example in ds['test']:
+#         context = "Content: " + example['title'] + " " + example['text'] + " \nSummary: "
+#         qa_pairs.append((context, example['text']))
+#     predict_answers = []
+#     with open(gold_file, 'wb') as f:
+#         pickle.dump(qa_pairs, f)
+#     error=0
+
+
+
+#     with open(pred_file, 'a') as f:
+#       for pair in tqdm(qa_pairs):
+#         ids_qa, ids_ans = generate_xlsum(model, pair[0], max_new_tokens)
+#         ans = decode(ids_ans)
+#         ans = ans.replace('\n', ' ').replace('\r', '')
+#         if len(ans) < 1:
+#             error +=1
+#             ans = '\n'
+#         if ans[-1] != '\n':
+#             ans += '\n'
+#         print(ans, '\n------\nstart', decode(ids_qa[0].tolist()))
+#         print('---------------')
+#         f.write(ans)
+
+
 def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl'):
     print("Start eval")
     ds = datasets.load_dataset('csebuetnlp/xlsum', lang)
@@ -191,56 +220,29 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
         context = "Content: " + example['title'] + " " + example['text'] + " \nSummary: "
         qa_pairs.append((context, example['text']))
     predict_answers = []
-    with open(gold_file, 'wb') as f:
-        pickle.dump(qa_pairs, f)
-    error=0
-
-
-
-    with open(pred_file, 'a') as f:
-      for pair in tqdm(qa_pairs):
-        ids_qa, ids_ans = generate_xlsum(model, pair[0], max_new_tokens)
-        ans = decode(ids_ans)
-        ans = ans.replace('\n', ' ').replace('\r', '')
-        if len(ans) < 1:
-            error +=1
-            ans = '\n'
-        if ans[-1] != '\n':
-            ans += '\n'
-        print(ans, '\n------\nstart', decode(ids_qa[0].tolist()))
-        print('---------------')
-        f.write(ans)
-
-
-def evaluate():
-    print("Start eval")
-    ds = datasets.load_dataset('csebuetnlp/xlsum', "english")
-    qa_pairs = []
-    for example in ds['test']:
-        context = "Content: " + example['title'] + " " + example['text'] + " \nSummary: "
-        qa_pairs.append((context, example['text']))
-    predict_answers = []
 
     eos_token = enc.eot_token
-    
-    with torch.no_grad():
-        with ctx:
-            for pair in qa_pairs:
-                start_ids = encode(pair[0])
-                x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
-                if x.size(1)+max_new_tokens > model.config.block_size:
-                    x = x[:, -(model.config.block_size+max_new_tokens):]
-                start_idx = x.size(1)
-                y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
-                end_idx = y.size(1)
-                for idx in range(y.size(1)):
-                    if y[0][idx] == eos_token:
-                        end_idx = idx
-                ans = decode(y[0][start_idx:end_idx].tolist())
-                print(ans)
-                predict_answers.append(ans)
-                print('---------------')
+    with open(gold_file, 'wb') as f:
+        pickle.dump(qa_pairs, f)
+    with open(pred_file, 'a') as f:
+        with torch.no_grad():
+            with ctx:
+                for pair in qa_pairs:
+                    start_ids = encode(pair[0])
+                    x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
+                    if x.size(1)+max_new_tokens > model.config.block_size:
+                        x = x[:, -(model.config.block_size+max_new_tokens):]
+                    start_idx = x.size(1)
+                    y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
+                    end_idx = y.size(1)
+                    for idx in range(y.size(1)):
+                        if y[0][idx] == eos_token:
+                            end_idx = idx
+                    ans = decode(y[0][start_idx:end_idx].tolist())
+                    ans = ans.replace('\n', ' ').replace('\r', '')
+                    predict_answers.append(ans)
+                    f.write(ans)
             
 
-# evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
-evaluate()
+evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
+# evaluate()
