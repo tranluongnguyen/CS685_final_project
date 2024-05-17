@@ -232,7 +232,6 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
         eos_token = tokenizer.eos_token_id
     else:
         eos_token = enc.eot_token
-    print('eos', eos_token)
     with open(gold_file, 'wb') as f:
         pickle.dump(qa_pairs, f)
     with open(pred_file, 'a') as f:
@@ -249,11 +248,10 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
                     for idx in range(y.size(1)):
                         if y[0][idx] == eos_token:
                             end_idx = idx
-                    print("length", start_idx, end_idx)
                     ans = decode(y[0][start_idx:end_idx].tolist())
                     ans = ans.replace('\n', ' ').replace('\r', '')
                     predict_answers.append(ans)
-                    f.write(ans)
+                    f.write(ans+'\n')
             
 
 # evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
