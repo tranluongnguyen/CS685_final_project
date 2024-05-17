@@ -182,8 +182,8 @@ def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
     qa_pairs = []
     error = 0
     for example in ds['test']:
-        question = "Context: " + " " + example['context'] + " \nQuestion: " + example['question'] \
-            + " \nAnswer: "
+        # question = "Context: " + " " + example['context'] + " \nQuestion: " + example['question']  + " \nAnswer: "
+        question = "Nội dung: " + " " + example['context'] + " \nCâu hỏi: " + example['question']  + " \nTrả lời: "
         qa_pairs.append((question, example['answers']['text'][0]))
     with open(saved_file, 'a') as f:
       for pair in tqdm(qa_pairs):
