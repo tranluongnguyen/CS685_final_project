@@ -188,7 +188,7 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
     for example in ds['test']:
         if 'french' in embed_path:
            for index, qs in enumerate(example['questions']):
-              question = "Context: " + " " + example['context'] + " \nQuestion: " + qs  + " \nAnswer: "
+              question = "Contexte: " + " " + example['context'] + " \nQuestion: " + qs  + " \nRépondre: "
               qa_pairs.append((question, example['answers']['texts'][index]))
         else:
             question = "Context: " + " " + example['context'] + " \nQuestion: " + example['question']  + " \nAnswer: "
