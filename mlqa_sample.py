@@ -30,9 +30,9 @@ import transformers
 
 # model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
 # embed_path = "None"
-model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
-embed_path = "english"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
+# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
+# embed_path = "english"
+model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
 embed_path = "english"
 
 
@@ -233,8 +233,8 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
         f.write(ans)
 
 # evaluate_mlqa()
-evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_af_predict.txt', gold_file='mlqa_en.pkl')
-# evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_noise_predict.txt', gold_file='mlqa_en.pkl')
+# evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_af_predict.txt', gold_file='mlqa_en.pkl')
+evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_noise_predict.txt', gold_file='mlqa_en.pkl')
 
 # evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_std_predict.txt', gold_file='mlqa_vi.pkl')
 # evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_af_predict.txt', gold_file='mlqa_vi.pkl')
