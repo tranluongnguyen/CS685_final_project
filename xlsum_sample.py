@@ -14,6 +14,9 @@ import transformers
 
 # -----------------------------------------------------------------------------
 model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
+
+model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
+
 embed_path = "english"
 
 
