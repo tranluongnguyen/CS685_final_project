@@ -176,7 +176,7 @@ def generate_mlqa(model, text, max_new_tokens):
 
         return idx, ids_answer
 
-def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
+def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_file='mlqa_en.pkl'):
     print("Start eval")
     if 'french' in embed_path:
        ds = datasets.load_dataset('fquad', data_dir=lang)
@@ -186,9 +186,14 @@ def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
     qa_pairs = []
     error = 0
     for example in ds['test']:
-        question = "Context: " + " " + example['context'] + " \nQuestion: " + example['question']  + " \nAnswer: "
-        # question = "Nội dung: " + " " + example['context'] + " \nCâu hỏi: " + example['question']  + " \nTrả lời: "
-        qa_pairs.append((question, example['answers']['text'][0]))
+        if 'french' in embed_path:
+           for index, qs in enumerate(example['questions']):
+              question = "Context: " + " " + example['context'] + " \nQuestion: " + qs  + " \nAnswer: "
+              qa_pairs.append((question, example['answers']['texts'][i]))
+        else:
+            question = "Context: " + " " + example['context'] + " \nQuestion: " + example['question']  + " \nAnswer: "
+            # question = "Nội dung: " + " " + example['context'] + " \nCâu hỏi: " + example['question']  + " \nTrả lời: "
+            qa_pairs.append((question, example['answers']['text'][0]))
     with open(saved_file, 'a') as f:
       for pair in tqdm(qa_pairs):
         ids_qa, ids_ans = generate_mlqa(model, pair[0], max_new_tokens)
@@ -202,6 +207,7 @@ def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
         f.write(ans)
 
 # evaluate_mlqa()
-# evaluate_mlqa(lang='mlqa.vi.vi', saved_file='mlqa_vi_std_predict.txt')
-evaluate_mlqa(lang='./fr_dataset', saved_file='mlqa_fr_std_predict.txt')
+# evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_std_predict.txt, gold_file='mlqa_vi.pkl')
+evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_std_predict.txt', gold_file='mlqa_fr.pkl')
+
 
