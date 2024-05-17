@@ -139,8 +139,6 @@ def generate_mlqa(model, text, max_new_tokens):
     with torch.no_grad():
       with ctx:
         start_ids = encode(text)
-        print(text)
-        print("decode: ", decode(start_ids))
         x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
         idx = x
         ids_answer = []
@@ -191,6 +189,7 @@ def evaluate_mlqa(lang='mlqa.en.en', saved_file='mlqa_en_std_predict.txt'):
       for pair in tqdm(qa_pairs):
         ids_qa, ids_ans = generate_mlqa(model, pair[0], max_new_tokens)
         ans = decode(ids_ans)
+        print("all:", decode(ids_qa[0].tolist()))
         if len(ans) < 1:
           error +=1
           ans = '\n'
