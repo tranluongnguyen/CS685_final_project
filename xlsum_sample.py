@@ -220,6 +220,9 @@ def evaluate():
         context = "Content: " + example['title'] + " " + example['text'] + " \nSummary: "
         qa_pairs.append((context, example['text']))
     predict_answers = []
+
+    eos_token = enc.eot_token
+    
     with torch.no_grad():
         with ctx:
             for pair in qa_pairs:
@@ -231,7 +234,11 @@ def evaluate():
                 y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
                 print(x.size(), y.size())
                 ans = decode(y[0].tolist())
-                print(ans, '\n------\nstart', decode(y[0][start_idx:].tolist()))
+                end_idx = y.size(1)
+                for idx in range(y.size(1)):
+                    if y[0][idx] == eos_token:
+                        end_idx = idx
+                print(ans, '\n------\nstart', decode(y[0][start_idx:end_idx].tolist()))
                 predict_answers.append(ans)
                 print('---------------')
             
