@@ -7,32 +7,18 @@ from contextlib import nullcontext
 import torch
 import tiktoken
 from model import GPTConfig, GPT
-from tqdm import tqdm
 import datasets
-import pickle
 import transformers
 
 # -----------------------------------------------------------------------------
-# model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
-# embed_path = "/content/drive/MyDrive/CS685/weights/french/only_embed_adapt_french_standard.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/french/only_embed_adapt_french_af.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/french/only_embed_adapt_french_noise.pt"
-
-model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
-embed_path = "/content/drive/MyDrive/CS685/weights/vietnamese/only_embed_adapt_viet_standard.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_viet_af.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
+model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
+embed_path = "english"
 
 
-# model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
-embed_path = "None"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
-
+# model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
+# embed_path = "english"
+# model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
+# embed_path = "english"
 
 # model_path = "out/lowresource_std_vietnamese/ckpt_latest.pt"
 # model_path = "out/standard/ckpt_iter_63000.pt"
@@ -131,17 +117,17 @@ else:
     decode = lambda l: enc.decode(l)
 
 # NOTE overide the tokenizer if we are using a different language
-if "vietnamese" in embed_path:
+if "vietnamese" in model_path:
     print("override vietnamese tokenizer")
     tokenizer = transformers.AutoTokenizer.from_pretrained("data/vietnamese/vi_tokenizer")
     encode = lambda s: tokenizer.encode(s)
     decode = lambda l: tokenizer.decode(l)
-elif "french" in embed_path:
+elif "french" in model_path:
     print("override french tokenizer")
     tokenizer = transformers.AutoTokenizer.from_pretrained("data/french/fr_tokenizer")
     encode = lambda s: tokenizer.encode(s)
     decode = lambda l: tokenizer.decode(l)
-elif "chinese" in embed_path:
+elif "chinese" in model_path:
     print("override chinese tokenizer")
     tokenizer = transformers.AutoTokenizer.from_pretrained("data/chinese/zh_tokenizer")
     encode = lambda s: tokenizer.encode(s)
@@ -151,10 +137,9 @@ elif "chinese" in embed_path:
 if start.startswith('FILE:'):
     with open(start[5:], 'r', encoding='utf-8') as f:
         start = f.read()
-start_ids = encode(start)
-x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
 
-def generate_mlqa(model, text, max_new_tokens):
+
+def generate_xlsum(model, text, max_new_tokens):
     with torch.no_grad():
       with ctx:
         start_ids = encode(text)
@@ -195,29 +180,19 @@ def generate_mlqa(model, text, max_new_tokens):
 
         return idx, ids_answer
 
-def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_file='mlqa_en.pkl'):
+def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl'):
     print("Start eval")
-    if 'french' in embed_path:
-       ds = datasets.load_dataset('fquad', data_dir=lang)
-       ds['test'] = ds.pop('validation') # rename the test split
-    else:
-       ds = datasets.load_dataset('mlqa', lang)
+    ds = datasets.load_dataset('csebuetnlp/xlsum', lang)
     qa_pairs = []
-    error = 0
     for example in ds['test']:
-        if 'french' in embed_path:
-           for index, qs in enumerate(example['questions']):
-              question = "Contexte: " + " " + example['context'] + " \nQuestion: " + qs  + " \nRépondre: "
-              qa_pairs.append((question, example['answers']['texts'][index]))
-        else:
-            question = "Context: " + " " + example['context'] + " \nQuestion: " + example['question']  + " \nAnswer: "
-            # question = "Nội dung: " + " " + example['context'] + " \nCâu hỏi: " + example['question']  + " \nTrả lời: "
-            qa_pairs.append((question, example['answers']['text'][0]))
+        context = "Content: " + example['title'] + " " + example['text'] + " \nSummary: "
+        qa_pairs.append((context, example['text']))
+    predict_answers = []
     with open(gold_file, 'wb') as f:
         pickle.dump(qa_pairs, f)
     with open(pred_file, 'a') as f:
       for pair in tqdm(qa_pairs):
-        ids_qa, ids_ans = generate_mlqa(model, pair[0], max_new_tokens)
+        ids_qa, ids_ans = generate_xlsum(model, pair[0], max_new_tokens)
         ans = decode(ids_ans)
         ans = ans.replace('\n', ' ').replace('\r', '')
         if len(ans) < 1:
@@ -227,16 +202,26 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
             ans += '\n'
         f.write(ans)
 
-# evaluate_mlqa()
-# evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_af_predict.txt', gold_file='mlqa_en.pkl')
-# evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_noise_predict.txt', gold_file='mlqa_en.pkl')
 
-evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_std_predict.txt', gold_file='mlqa_vi.pkl')
-# evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_af_predict.txt', gold_file='mlqa_vi.pkl')
-# evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_noise_predict.txt', gold_file='mlqa_vi.pkl')
+def evaluate():
+    print("Start eval")
+    ds = datasets.load_dataset('csebuetnlp/xlsum', "english")
+    qa_pairs = []
+    for example in ds['test']:
+        context = "Content: " + example['title'] + " " + example['text'] + " \nSummary: "
+        qa_pairs.append((context, example['text']))
+    predict_answers = []
+    with torch.no_grad():
+        with ctx:
+            for pair in qa_pairs:
+                start_ids = encode(pair[0])
+                x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
+                y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
+                ans = decode(y[0].tolist())
+                print(ans)
+                predict_answers.append(ans)
+                print('---------------')
+            
 
-# evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_std_predict.txt', gold_file='mlqa_fr.pkl')
-# evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_af_predict.txt', gold_file='mlqa_fr.pkl')
-# evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_noise_predict.txt', gold_file='mlqa_fr.pkl')
-
+evaluate()
 
