@@ -15,8 +15,8 @@ import transformers
 # -----------------------------------------------------------------------------
 model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
 
-model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
+# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
+model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
 embed_path = "english"
 
 
@@ -247,7 +247,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
                     f.write(ans)
             
 
-evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
-# evaluate_xlsum(lang='english', pred_file='xlsum_en_af_predict.txt', gold_file='xlsum_en.pkl')
+# evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
+evaluate_xlsum(lang='english', pred_file='xlsum_en_af_predict.txt', gold_file='xlsum_en.pkl')
 
 # evaluate()
