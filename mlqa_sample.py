@@ -231,10 +231,10 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
         f.write(ans)
 
 # evaluate_mlqa()
-# evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_af_predict.txt', gold_file='mlqa_en.pkl')
+evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_af_predict.txt', gold_file='mlqa_en.pkl')
 # evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_noise_predict.txt', gold_file='mlqa_en.pkl')
 
-evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_std_predict.txt', gold_file='mlqa_vi.pkl')
+# evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_std_predict.txt', gold_file='mlqa_vi.pkl')
 # evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_af_predict.txt', gold_file='mlqa_vi.pkl')
 # evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_noise_predict.txt', gold_file='mlqa_vi.pkl')
 
