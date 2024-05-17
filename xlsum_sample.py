@@ -200,6 +200,8 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
             ans = '\n'
         if ans[-1] != '\n':
             ans += '\n'
+        print(ans)
+        print('---------------')
         f.write(ans)
 
 
@@ -223,5 +225,4 @@ def evaluate():
                 print('---------------')
             
 
-evaluate()
-
+evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
