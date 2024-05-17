@@ -26,6 +26,16 @@ embed_path = "/content/drive/MyDrive/Cs685/weights/vietnamese/only_embed_adapt_v
 # model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_noise.pt"
 # embed_path ="/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
 
+model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
+embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/french/only_embed_adapt_french_standard.pt"
+
+
+# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
+# embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_viet_af.pt"
+# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_noise.pt"
+# embed_path ="/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
+
+
 # model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
 # embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_viet_af.pt"
 # model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
@@ -257,6 +267,8 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
 # evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
 # evaluate_xlsum(lang='english', pred_file='xlsum_en_af_predict.txt', gold_file='xlsum_en.pkl')
 
-evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_std_predict.txt', gold_file='xlsum_vi.pkl')
+# evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_std_predict.txt', gold_file='xlsum_vi.pkl')
 # evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_af_predict.txt', gold_file='xlsum_vi.pkl')
 # evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_noise_predict.txt', gold_file='xlsum_vi.pkl')
+
+evaluate_xlsum(lang='french', pred_file='xlsum_fr_std_predict.txt', gold_file='xlsum_fr.pkl')
