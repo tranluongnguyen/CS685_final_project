@@ -172,7 +172,7 @@ def generate_xlsum(model, text, max_new_tokens):
             # else:
             #    eos_token = enc.eot_token
             eos_token = enc.eot_token
-            if idx_next[0][0].item() == eos_token and False:
+            if idx_next[0][0].item() == eos_token:
               if len(ids_answer) > 1:
                 break
               else:
@@ -204,7 +204,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
             ans = '\n'
         if ans[-1] != '\n':
             ans += '\n'
-        print(ans)
+        print(ans, '\n------\nstart' decode(ids_qa[0].tolist()))
         print('---------------')
         f.write(ans)
 
