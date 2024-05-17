@@ -204,7 +204,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
             ans = '\n'
         if ans[-1] != '\n':
             ans += '\n'
-        print(ans, '\n------\nstart' decode(ids_qa[0].tolist()))
+        print(ans, '\n------\nstart', decode(ids_qa[0].tolist()))
         print('---------------')
         f.write(ans)
 
