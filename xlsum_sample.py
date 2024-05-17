@@ -227,10 +227,11 @@ def evaluate():
                 x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
                 if x.size(1)+max_new_tokens > model.config.block_size:
                     x = x[:, -(model.config.block_size+max_new_tokens):]
+                start_idx = x.size(1)
                 y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
                 print(x.size(), y.size())
                 ans = decode(y[0].tolist())
-                print(ans)
+                print(ans, '\n------\nstart', decode(y[0][start_idx:].tolist()))
                 predict_answers.append(ans)
                 print('---------------')
             
