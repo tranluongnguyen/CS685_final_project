@@ -244,6 +244,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
                     for idx in range(y.size(1)):
                         if y[0][idx] == eos_token:
                             end_idx = idx
+                    print("length", start_idx, end_idx)
                     ans = decode(y[0][start_idx:end_idx].tolist())
                     ans = ans.replace('\n', ' ').replace('\r', '')
                     predict_answers.append(ans)
