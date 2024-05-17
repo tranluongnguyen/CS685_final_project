@@ -194,6 +194,9 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
     with open(gold_file, 'wb') as f:
         pickle.dump(qa_pairs, f)
     error=0
+
+
+
     with open(pred_file, 'a') as f:
       for pair in tqdm(qa_pairs):
         ids_qa, ids_ans = generate_xlsum(model, pair[0], max_new_tokens)
@@ -222,11 +225,15 @@ def evaluate():
             for pair in qa_pairs:
                 start_ids = encode(pair[0])
                 x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
+                if x.size(1)+max_new_tokens > model.config.block_size:
+                    x = x[:, -(model.config.block_size+max_new_tokens):]
                 y = model.generate(x, max_new_tokens, temperature=temperature, top_k=top_k)
+                print(x.size(), y.size())
                 ans = decode(y[0].tolist())
                 print(ans)
                 predict_answers.append(ans)
                 print('---------------')
             
 
-evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
+# evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
+evaluate()
