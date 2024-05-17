@@ -13,12 +13,12 @@ import pickle
 import transformers
 
 # -----------------------------------------------------------------------------
-model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
-embed_path = "/content/drive/MyDrive/CS685/weights/french/only_embed_adapt_french_standard.pt"
+# model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
+# embed_path = "/content/drive/MyDrive/CS685/weights/french/only_embed_adapt_french_standard.pt"
 # model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
 # embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/french/only_embed_adapt_french_af.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/french/only_embed_adapt_french_noise.pt"
+model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
+embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/french/only_embed_adapt_french_noise.pt"
 
 # model_path = "/content/drive/MyDrive/CS685/weights/mlqa_en/ckpt_best_mlqa_en_standard.pt"
 # embed_path = "/content/drive/MyDrive/CS685/weights/vietnamese/only_embed_adapt_viet_standard.pt"
@@ -213,17 +213,17 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
             # question = "Nội dung: " + " " + example['context'] + " \nCâu hỏi: " + example['question']  + " \nTrả lời: "
             qa_pairs.append((question, example['answers']['text'][0]))
     with open(gold_file, 'wb') as f:
-       pickle.dump(qa_pairs, f)
+        pickle.dump(qa_pairs, f)
     with open(pred_file, 'a') as f:
       for pair in tqdm(qa_pairs):
         ids_qa, ids_ans = generate_mlqa(model, pair[0], max_new_tokens)
         ans = decode(ids_ans)
-        if len(ans) < 1:
-          error +=1
-          ans = '\n'
         ans = ans.replace('\n', ' ').replace('\r', '')
+        if len(ans) < 1:
+            error +=1
+            ans = '\n'
         if ans[-1] != '\n':
-          ans += '\n'
+            ans += '\n'
         f.write(ans)
 
 # evaluate_mlqa()
@@ -234,8 +234,8 @@ def evaluate_mlqa(lang='mlqa.en.en', pred_file='mlqa_en_std_predict.txt', gold_f
 # evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_af_predict.txt', gold_file='mlqa_vi.pkl')
 # evaluate_mlqa(lang='mlqa.vi.vi', pred_file='mlqa_vi_noise_predict.txt', gold_file='mlqa_vi.pkl')
 
-evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_std_predict.txt', gold_file='mlqa_fr.pkl')
+# evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_std_predict.txt', gold_file='mlqa_fr.pkl')
 # evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_af_predict.txt', gold_file='mlqa_fr.pkl')
-# evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_noise_predict.txt', gold_file='mlqa_fr.pkl')
+evaluate_mlqa(lang='./fr_dataset', pred_file='mlqa_fr_noise_predict.txt', gold_file='mlqa_fr.pkl')
 
 
