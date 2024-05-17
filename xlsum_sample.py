@@ -122,17 +122,17 @@ else:
     decode = lambda l: enc.decode(l)
 
 # NOTE overide the tokenizer if we are using a different language
-if "vietnamese" in model_path:
+if "vietnamese" in embed_path:
     print("override vietnamese tokenizer")
     tokenizer = transformers.AutoTokenizer.from_pretrained("data/vietnamese/vi_tokenizer")
     encode = lambda s: tokenizer.encode(s)
     decode = lambda l: tokenizer.decode(l)
-elif "french" in model_path:
+elif "french" in embed_path:
     print("override french tokenizer")
     tokenizer = transformers.AutoTokenizer.from_pretrained("data/french/fr_tokenizer")
     encode = lambda s: tokenizer.encode(s)
     decode = lambda l: tokenizer.decode(l)
-elif "chinese" in model_path:
+elif "chinese" in embed_path:
     print("override chinese tokenizer")
     tokenizer = transformers.AutoTokenizer.from_pretrained("data/chinese/zh_tokenizer")
     encode = lambda s: tokenizer.encode(s)
@@ -144,47 +144,47 @@ if start.startswith('FILE:'):
         start = f.read()
 
 
-def generate_xlsum(model, text, max_new_tokens):
-    with torch.no_grad():
-      with ctx:
-        start_ids = encode(text)
-        x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
-        idx = x
-        ids_answer = []
-        for max_token in range(max_new_tokens):
-            # if the sequence context is growing too long we must crop it at block_size
-            idx_cond = idx if idx.size(1) <= model.config.block_size else idx[:, -model.config.block_size:]
-            # forward the model to get the logits for the index in the sequence
-            logits, _ = model(idx_cond)
-            # pluck the logits at the final step and scale by desired temperature
-            logits = logits[:, -1, :] / temperature
-            # optionally crop the logits to only the top k options
-            if top_k is not None:
-                v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
-                logits[logits < v[:, [-1]]] = -float('Inf')
-            # apply softmax to convert logits to (normalized) probabilities
-            probs = torch.nn.functional.softmax(logits, dim=-1)
-            # sample from the distribution
-            idx_next = torch.multinomial(probs, num_samples=1)
-            while idx_next[0][0].item() == 198:
-                idx_next = torch.multinomial(probs, num_samples=1)
+# def generate_xlsum(model, text, max_new_tokens):
+#     with torch.no_grad():
+#       with ctx:
+#         start_ids = encode(text)
+#         x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
+#         idx = x
+#         ids_answer = []
+#         for max_token in range(max_new_tokens):
+#             # if the sequence context is growing too long we must crop it at block_size
+#             idx_cond = idx if idx.size(1) <= model.config.block_size else idx[:, -model.config.block_size:]
+#             # forward the model to get the logits for the index in the sequence
+#             logits, _ = model(idx_cond)
+#             # pluck the logits at the final step and scale by desired temperature
+#             logits = logits[:, -1, :] / temperature
+#             # optionally crop the logits to only the top k options
+#             if top_k is not None:
+#                 v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
+#                 logits[logits < v[:, [-1]]] = -float('Inf')
+#             # apply softmax to convert logits to (normalized) probabilities
+#             probs = torch.nn.functional.softmax(logits, dim=-1)
+#             # sample from the distribution
+#             idx_next = torch.multinomial(probs, num_samples=1)
+#             while idx_next[0][0].item() == 198:
+#                 idx_next = torch.multinomial(probs, num_samples=1)
             
-            # append sampled index to the running sequence and continue
-            # if "vietnamese" or "french" or "chinese" in embed_path:
-            #    eos_token = tokenizer.eos_token_id
-            # else:
-            #    eos_token = enc.eot_token
-            eos_token = enc.eot_token
-            if idx_next[0][0].item() == eos_token:
-              if len(ids_answer) > 1:
-                break
-              else:
-                continue
-            else:
-              ids_answer.append(idx_next[0][0].item())
-            idx = torch.cat((idx, idx_next), dim=1)
+#             # append sampled index to the running sequence and continue
+#             # if "vietnamese" or "french" or "chinese" in embed_path:
+#             #    eos_token = tokenizer.eos_token_id
+#             # else:
+#             #    eos_token = enc.eot_token
+#             eos_token = enc.eot_token
+#             if idx_next[0][0].item() == eos_token:
+#               if len(ids_answer) > 1:
+#                 break
+#               else:
+#                 continue
+#             else:
+#               ids_answer.append(idx_next[0][0].item())
+#             idx = torch.cat((idx, idx_next), dim=1)
 
-        return idx, ids_answer
+#         return idx, ids_answer
 
 # def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl'):
 #     print("Start eval")
@@ -216,7 +216,7 @@ def generate_xlsum(model, text, max_new_tokens):
 
 
 def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl'):
-    print("Start new eval")
+    print("Start eval")
     ds = datasets.load_dataset('csebuetnlp/xlsum', lang)
     qa_pairs = []
     for example in ds['test']:
@@ -248,4 +248,7 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
             
 
 # evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
-evaluate_xlsum(lang='english', pred_file='xlsum_en_af_predict.txt', gold_file='xlsum_en.pkl')
+# evaluate_xlsum(lang='english', pred_file='xlsum_en_af_predict.txt', gold_file='xlsum_en.pkl')
+
+
+evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_std_predict.txt', gold_file='xlsum_vi.pkl')
