@@ -33,6 +33,9 @@ embed_path = "/content/drive/MyDrive/Cs685/weights/french/only_embed_adapt_frenc
 model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_noise.pt"
 embed_path = "/content/drive/MyDrive/Cs685/weights/french/only_embed_adapt_french_noise.pt"
 
+model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
+embed_path = "/content/drive/MyDrive/Cs685/weights/chinese/only_embed_adapt_chinese_standard.pt"
+
 # model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
 # embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_viet_af.pt"
 # model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_noise.pt"
@@ -276,4 +279,8 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
 
 # evaluate_xlsum(lang='french', pred_file='xlsum_fr_std_predict.txt', gold_file='xlsum_fr.pkl')
 # evaluate_xlsum(lang='french', pred_file='xlsum_fr_af_predict.txt', gold_file='xlsum_fr.pkl')
-evaluate_xlsum(lang='french', pred_file='xlsum_fr_noise_predict.txt', gold_file='xlsum_fr.pkl')
+# evaluate_xlsum(lang='french', pred_file='xlsum_fr_noise_predict.txt', gold_file='xlsum_fr.pkl')
+
+evaluate_xlsum(lang='chinese-traditional', pred_file='xlsum_zh_std_predict.txt', gold_file='xlsum_zh.pkl')
+# evaluate_xlsum(lang='french', pred_file='xlsum_fr_af_predict.txt', gold_file='xlsum_fr.pkl')
+# evaluate_xlsum(lang='french', pred_file='xlsum_fr_noise_predict.txt', gold_file='xlsum_fr.pkl')
