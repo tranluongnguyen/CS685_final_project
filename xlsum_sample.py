@@ -13,41 +13,8 @@ import pickle
 import transformers
 
 # -----------------------------------------------------------------------------
-model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
-
-# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
 model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
 embed_path = "english"
-
-model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
-embed_path = "/content/drive/MyDrive/Cs685/weights/vietnamese/only_embed_adapt_viet_standard.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_viet_af.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_noise.pt"
-# embed_path ="/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
-
-model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
-embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/french/only_embed_adapt_french_standard.pt"
-model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
-embed_path = "/content/drive/MyDrive/Cs685/weights/french/only_embed_adapt_french_af.pt"
-model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_noise.pt"
-embed_path = "/content/drive/MyDrive/Cs685/weights/french/only_embed_adapt_french_noise.pt"
-
-model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
-embed_path = "/content/drive/MyDrive/Cs685/weights/chinese/only_embed_adapt_chinese_standard.pt"
-model_path = "/content/drive/MyDrive/personalized_text_gen/CS685/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
-embed_path = "/content/drive/MyDrive/personalized_text_gen/CS685/weights/chinese/only_embed_adapt_chinese_standard.pt"
-
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_viet_af.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/xlsum_en/ckpt_best_xlsum_en_noise.pt"
-# embed_path ="/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
-
-
-# model_path = "/content/drive/MyDrive/personalized_text_gen/weights/mlqa_en/ckpt_best_mlqa_en_af.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/weights/vietnamese/only_embed_adapt_viet_af.pt"
-# model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/mlqa_en/ckpt_best_mlqa_en_noise.pt"
-# embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_vietnamese_noise.pt"
 
 init_from = 'resume' # either 'resume' (from an out_dir) or a gpt2 variant (e.g. 'gpt2-xl')
 out_dir = 'out' # ignored if init_from is not 'resume'
@@ -164,78 +131,6 @@ if start.startswith('FILE:'):
     with open(start[5:], 'r', encoding='utf-8') as f:
         start = f.read()
 
-
-# def generate_xlsum(model, text, max_new_tokens):
-#     with torch.no_grad():
-#       with ctx:
-#         start_ids = encode(text)
-#         x = (torch.tensor(start_ids, dtype=torch.long, device=device)[None, ...])
-#         idx = x
-#         ids_answer = []
-#         for max_token in range(max_new_tokens):
-#             # if the sequence context is growing too long we must crop it at block_size
-#             idx_cond = idx if idx.size(1) <= model.config.block_size else idx[:, -model.config.block_size:]
-#             # forward the model to get the logits for the index in the sequence
-#             logits, _ = model(idx_cond)
-#             # pluck the logits at the final step and scale by desired temperature
-#             logits = logits[:, -1, :] / temperature
-#             # optionally crop the logits to only the top k options
-#             if top_k is not None:
-#                 v, _ = torch.topk(logits, min(top_k, logits.size(-1)))
-#                 logits[logits < v[:, [-1]]] = -float('Inf')
-#             # apply softmax to convert logits to (normalized) probabilities
-#             probs = torch.nn.functional.softmax(logits, dim=-1)
-#             # sample from the distribution
-#             idx_next = torch.multinomial(probs, num_samples=1)
-#             while idx_next[0][0].item() == 198:
-#                 idx_next = torch.multinomial(probs, num_samples=1)
-            
-#             # append sampled index to the running sequence and continue
-#             # if "vietnamese" or "french" or "chinese" in embed_path:
-#             #    eos_token = tokenizer.eos_token_id
-#             # else:
-#             #    eos_token = enc.eot_token
-#             eos_token = enc.eot_token
-#             if idx_next[0][0].item() == eos_token:
-#               if len(ids_answer) > 1:
-#                 break
-#               else:
-#                 continue
-#             else:
-#               ids_answer.append(idx_next[0][0].item())
-#             idx = torch.cat((idx, idx_next), dim=1)
-
-#         return idx, ids_answer
-
-# def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl'):
-#     print("Start eval")
-#     ds = datasets.load_dataset('csebuetnlp/xlsum', lang)
-#     qa_pairs = []
-#     for example in ds['test']:
-#         context = "Content: " + example['title'] + " " + example['text'] + " \nSummary: "
-#         qa_pairs.append((context, example['text']))
-#     predict_answers = []
-#     with open(gold_file, 'wb') as f:
-#         pickle.dump(qa_pairs, f)
-#     error=0
-
-
-
-#     with open(pred_file, 'a') as f:
-#       for pair in tqdm(qa_pairs):
-#         ids_qa, ids_ans = generate_xlsum(model, pair[0], max_new_tokens)
-#         ans = decode(ids_ans)
-#         ans = ans.replace('\n', ' ').replace('\r', '')
-#         if len(ans) < 1:
-#             error +=1
-#             ans = '\n'
-#         if ans[-1] != '\n':
-#             ans += '\n'
-#         print(ans, '\n------\nstart', decode(ids_qa[0].tolist()))
-#         print('---------------')
-#         f.write(ans)
-
-
 def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl'):
     print("Start eval")
     ds = datasets.load_dataset('csebuetnlp/xlsum', lang)
@@ -246,10 +141,6 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
     predict_answers = []
 
     eos_token = enc.eot_token
-    if "vietnamese" or "french" or "chinese" in embed_path:
-        eos_token = tokenizer.eos_token_id
-    else:
-        eos_token = enc.eot_token
     with open(gold_file, 'wb') as f:
         pickle.dump(qa_pairs, f)
     with open(pred_file, 'a') as f:
@@ -272,17 +163,6 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
                     f.write(ans+'\n')
             
 
-# evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
+evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_file='xlsum_en.pkl')
 # evaluate_xlsum(lang='english', pred_file='xlsum_en_af_predict.txt', gold_file='xlsum_en.pkl')
-
-# evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_std_predict.txt', gold_file='xlsum_vi.pkl')
-# evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_af_predict.txt', gold_file='xlsum_vi.pkl')
-# evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_noise_predict.txt', gold_file='xlsum_vi.pkl')
-
-# evaluate_xlsum(lang='french', pred_file='xlsum_fr_std_predict.txt', gold_file='xlsum_fr.pkl')
-# evaluate_xlsum(lang='french', pred_file='xlsum_fr_af_predict.txt', gold_file='xlsum_fr.pkl')
-# evaluate_xlsum(lang='french', pred_file='xlsum_fr_noise_predict.txt', gold_file='xlsum_fr.pkl')
-
-# evaluate_xlsum(lang='chinese_traditional', pred_file='xlsum_zh_std_predict.txt', gold_file='xlsum_zh.pkl')
-evaluate_xlsum(lang='chinese_traditional', pred_file='xlsum_zh_af_predict.txt', gold_file='xlsum_zh.pkl')
-# evaluate_xlsum(lang='chinese_traditional', pred_file='xlsum_zh_noise_predict.txt', gold_file='xlsum_zh.pkl')
+# evaluate_xlsum(lang='english', pred_file='xlsum_en_noise_predict.txt', gold_file='xlsum_en.pkl')
