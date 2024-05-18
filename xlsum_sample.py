@@ -28,8 +28,8 @@ embed_path = "/content/drive/MyDrive/Cs685/weights/vietnamese/only_embed_adapt_v
 
 model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_standard.pt"
 embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/french/only_embed_adapt_french_standard.pt"
-model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
-embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/french/only_embed_adapt_french_af.pt"
+model_path = "/content/drive/MyDrive/Cs685/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
+embed_path = "/content/drive/MyDrive/Cs685/weights/french/only_embed_adapt_french_af.pt"
 
 # model_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/xlsum_en/ckpt_best_xlsum_en_af.pt"
 # embed_path = "/content/drive/MyDrive/personalized_text_gen/scholary/weights/vietnamese/only_embed_adapt_viet_af.pt"
