@@ -272,5 +272,5 @@ def evaluate_xlsum(lang='english', pred_file='xlsum_en_std_predict.txt', gold_fi
 # evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_af_predict.txt', gold_file='xlsum_vi.pkl')
 # evaluate_xlsum(lang='vietnamese', pred_file='xlsum_vi_noise_predict.txt', gold_file='xlsum_vi.pkl')
 
-evaluate_xlsum(lang='french', pred_file='xlsum_fr_std_predict.txt', gold_file='xlsum_fr.pkl')
+# evaluate_xlsum(lang='french', pred_file='xlsum_fr_std_predict.txt', gold_file='xlsum_fr.pkl')
 evaluate_xlsum(lang='french', pred_file='xlsum_fr_af_predict.txt', gold_file='xlsum_fr.pkl')
